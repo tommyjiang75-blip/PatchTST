@@ -1,0 +1,68 @@
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.python-version
+.venv/
+**/.venv/
+venv/
+env/
+
+# Local configuration
+.env
+.env.*
+
+# Data and generated experiment artifacts
+dataset/
+**/dataset/
+data/
+**/data/
+checkpoints/
+**/checkpoints/
+logs/
+**/logs/
+results/
+**/results/
+test_results/
+**/test_results/
+outputs/
+**/outputs/
+runs/
+**/runs/
+wandb/
+**/wandb/
+mlruns/
+**/mlruns/
+lightning_logs/
+**/lightning_logs/
+
+# Result files and generated reports
+result*.txt
+results*.txt
+*.csv
+*.pdf
+
+# Model/data artifacts
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.pickle
+*.npy
+*.npz
+*.h5
+*.hdf5
+
+# Test and cache output
+.pytest_cache/
+**/.pytest_cache/
+.coverage
+htmlcov/
+.ipynb_checkpoints/
+**/.ipynb_checkpoints/
+
+# OS/editor noise
+.DS_Store
+.idea/
+.vscode/
