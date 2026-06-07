@@ -14,6 +14,11 @@ class WeatherData:
     borders: dict[str, tuple[int, int]]
     scaler_mean: np.ndarray
     scaler_scale: np.ndarray
+    target: str
+
+    @property
+    def target_index(self) -> int:
+        return self.columns.index(self.target)
 
 
 class WeatherWindowDataset(Dataset):
@@ -64,7 +69,16 @@ def load_weather_csv(data_path: str | Path, seq_len: int, target: str = "OT") ->
     scale[scale == 0.0] = 1.0
     scaled = ((values - mean) / scale).astype(np.float32)
 
-    return WeatherData(data=scaled, columns=columns, borders=borders, scaler_mean=mean, scaler_scale=scale)
+    return WeatherData(data=scaled, columns=columns, borders=borders, scaler_mean=mean, scaler_scale=scale, target=target)
+
+
+def inverse_transform(info: WeatherData, values: np.ndarray) -> np.ndarray:
+    return values * info.scaler_scale + info.scaler_mean
+
+
+def inverse_target(info: WeatherData, values: np.ndarray) -> np.ndarray:
+    target_index = info.target_index
+    return values[..., target_index] * info.scaler_scale[target_index] + info.scaler_mean[target_index]
 
 
 def window_starts(info: WeatherData, flag: str, seq_len: int, pred_len: int, batch_size: int, drop_last: bool = True) -> np.ndarray:
@@ -95,4 +109,3 @@ def make_loaders(info: WeatherData, seq_len: int, pred_len: int, batch_size: int
         DataLoader(WeatherWindowDataset(info.data, val_starts, seq_len, pred_len), batch_size=batch_size, shuffle=False, drop_last=True),
         DataLoader(WeatherWindowDataset(info.data, test_starts, seq_len, pred_len), batch_size=batch_size, shuffle=False, drop_last=True),
     )
-

@@ -76,6 +76,27 @@ def make_patchtst(input_size: int, seq_len: int, pred_len: int, d_model: int, n_
     return PatchTST.Model(config).float()
 
 
+def make_timesnet(input_size: int, seq_len: int, pred_len: int):
+    import TimesNet
+
+    config = TimesNet.default_config(
+        seq_len=seq_len,
+        pred_len=pred_len,
+        enc_in=input_size,
+        c_out=input_size,
+        top_k=2,
+        num_kernels=3,
+    )
+    return TimesNet.Model(config).float()
+
+
+def make_itransformer(input_size: int, seq_len: int, pred_len: int):
+    import iTransformer
+
+    config = iTransformer.default_config(seq_len=seq_len, pred_len=pred_len, enc_in=input_size, c_out=input_size)
+    return iTransformer.Model(config).float()
+
+
 def make_torch_model(name: str, input_size: int, seq_len: int, pred_len: int, gru_hidden_size: int, patchtst_d_model: int, patchtst_heads: int, patchtst_layers: int):
     if name == "linear":
         return LinearForecast(seq_len=seq_len, pred_len=pred_len)
@@ -83,5 +104,8 @@ def make_torch_model(name: str, input_size: int, seq_len: int, pred_len: int, gr
         return GRUForecast(input_size=input_size, hidden_size=gru_hidden_size, pred_len=pred_len)
     if name == "patchtst":
         return make_patchtst(input_size=input_size, seq_len=seq_len, pred_len=pred_len, d_model=patchtst_d_model, n_heads=patchtst_heads, e_layers=patchtst_layers)
+    if name == "timesnet":
+        return make_timesnet(input_size=input_size, seq_len=seq_len, pred_len=pred_len)
+    if name == "itransformer":
+        return make_itransformer(input_size=input_size, seq_len=seq_len, pred_len=pred_len)
     raise ValueError(f"Unknown torch model: {name}")
-
